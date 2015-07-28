@@ -16,12 +16,7 @@ module Royce
         # User.admins
         # User.editors
         available_role_names.each do |role_name|
-          if includer.superclass == ActiveRecord::Base
-            includer_class_name = includer.model_name.to_s.underscore.pluralize
-          else
-            includer_class_name = includer.superclass.model_name.to_s.underscore.pluralize
-          end
-          # includer_class_name = includer.model_name.to_s.underscore.pluralize
+          includer_class_name = includer.model_name.to_s.underscore.pluralize
           scope role_name.pluralize, -> { Role.find_by(name: role_name).send includer_class_name.to_sym }
         end
 
@@ -33,7 +28,7 @@ module Royce
         if includer.superclass == ActiveRecord::Base
           has_many includer.model_name.to_s.underscore.pluralize.to_sym, through: :connectors, source: :roleable, source_type: includer.model_name.to_s
         else
-          has_many includer.superclass.model_name.to_s.underscore.pluralize.to_sym, through: :connectors, source: :roleable, source_type: includer.model_name.to_s
+          has_many includer.model_name.to_s.underscore.pluralize.to_sym, through: :connectors, source: :roleable, source_type: includer.superclass.model_name.to_s
         end
       end
 
